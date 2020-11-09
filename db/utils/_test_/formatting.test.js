@@ -1,4 +1,9 @@
-const { createUserRef, formatTimestamp } = require("./formatting");
+const {
+  createArticleRef,
+  formatTimestamp,
+  formatCommentData,
+  createAuthorRef,
+} = require("../formatting");
 
 describe("createUserRef", () => {
   test("when passed with an empty array, returns an empty object", () => {
@@ -31,7 +36,7 @@ describe("createUserRef", () => {
   });
 });
 
-describe.only("formatTimestamp", () => {
+describe("formatTimestamp", () => {
   test("should convert a created at millisecond timestamp to a psql timestamp format", () => {
     const articleRows = [
       {
@@ -114,5 +119,226 @@ describe.only("formatTimestamp", () => {
     ];
     formatTimestamp(articleRows);
     expect(articleRows).toEqual(inputCopy);
+  });
+});
+
+describe("createArticleRef", () => {
+  test("when passed an empty array returns an empty object", () => {
+    const input = [];
+    const expectedOutput = {};
+    expect(createArticleRef(input)).toEqual(expectedOutput);
+  });
+  test("when passed an array of article objects, returns a correctly formatted reference object", () => {
+    const input = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    const expectedOutput = {
+      "Using React Native: One Year Later": 7,
+      "Express.js: A Server-Side JavaScript Framework": 8,
+    };
+    expect(createArticleRef(input)).toEqual(expectedOutput);
+  });
+  test("should not mutate the input array", () => {
+    const input = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    const inputCopy = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    createArticleRef(input);
+    expect(input).toEqual(inputCopy);
+  });
+});
+
+describe("Name of the group", () => {
+  test("when passed an empty array returns an empty object", () => {
+    const input = [];
+    const expectedOutput = {};
+    expect(createAuthorRef(input)).toEqual(expectedOutput);
+  });
+  test("when passed an array of article objects, returns a correctly formatted reference object", () => {
+    const input = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    const expectedOutput = {
+      tickle122: 7,
+      cooljmessy: 8,
+    };
+    expect(createAuthorRef(input)).toEqual(expectedOutput);
+  });
+  test("should not mutate the input array", () => {
+    const input = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    const inputCopy = [
+      {
+        article_id: 7,
+        title: "Using React Native: One Year Later",
+        body:
+          "When I interviewed for the iOS developer opening at Discord last spring, the tech lead Stanislav told me: React Native is the future. We will use it to build our iOS app from scratch as soon as it becomes public. As a native iOS developer, I strongly doubted using web technologies to build mobile apps because of my previous experiences with tools like PhoneGap. But after learning and using React Native for a while, I am glad we made that decision.",
+        votes: 0,
+        topic: "coding",
+        author: "tickle122",
+        created_at: "2016-12-07T21:37:26.335Z",
+      },
+      {
+        article_id: 8,
+        title: "Express.js: A Server-Side JavaScript Framework",
+        body:
+          "You’re probably aware that JavaScript is the programming language most often used to add interactivity to the front end of a website, but its capabilities go far beyond that—entire sites can be built on JavaScript, extending it from the front to the back end, seamlessly. Express.js and Node.js gave JavaScript newfound back-end functionality—allowing developers to build software with JavaScript on the server side for the first time. Together, they make it possible to build an entire site with JavaScript: You can develop server-side applications with Node.js and then publish those Node.js apps as websites with Express. Because Node.js itself wasn’t intended to build websites, the Express framework is able to layer in built-in structure and functions needed to actually build a site. It’s a pretty lightweight framework that’s great for giving developers extra, built-in web application features and the Express API without overriding the already robust, feature-packed Node.js platform. In short, Express and Node are changing the way developers build websites.",
+        votes: 0,
+        topic: "coding",
+        author: "cooljmessy",
+        created_at: "2016-06-30T06:59:39.654Z",
+      },
+    ];
+    createAuthorRef(input);
+    expect(input).toEqual(inputCopy);
+  });
+});
+
+describe("formatCommentData", () => {
+  test("returns an empty array when passed an empty comments array", () => {
+    const comments = [];
+    const ref = {};
+    const expectedOutput = [];
+    expect(formatCommentData(comments, ref)).toEqual(expectedOutput);
+  });
+  test("when passed an array of comments and a reference object, returns an array of correctly formatted objects", () => {
+    const comments = [
+      {
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+        belongs_to:
+          "The People Tracking Every Touch, Pass And Tackle in the World Cup",
+        created_by: "tickle122",
+        votes: -1,
+        created_at: 1468087638932,
+      },
+      {
+        body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
+        belongs_to: "Making sense of Redux",
+        created_by: "grumpy19",
+        votes: 7,
+        created_at: 1478813209256,
+      },
+    ];
+    const ref = {
+      "The People Tracking Every Touch, Pass And Tackle in the World Cup": 7,
+      "Making sense of Redux": 8,
+    };
+    const expectedOutput = [
+      {
+        body:
+          "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+        article_id: 7,
+        author: "tickle122",
+        votes: -1,
+        created_at: 1468087638932,
+      },
+      {
+        body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
+        article_id: 8,
+        author: "grumpy19",
+        votes: 7,
+        created_at: 1478813209256,
+      },
+    ];
+    expect(formatCommentData(comments, ref)).toEqual(expectedOutput);
   });
 });
