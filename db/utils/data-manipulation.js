@@ -18,22 +18,6 @@ exports.formatTimestamp = (rows) => {
   });
 };
 
-exports.createArticleRef = (articleRows) => {
-  const ref = {};
-  articleRows.forEach((article) => {
-    ref[article.title] = article.article_id;
-  });
-  return ref;
-};
-
-exports.createAuthorRef = (articleRows) => {
-  const ref = {};
-  articleRows.forEach((article) => {
-    ref[article.author] = article.article_id;
-  });
-  return ref;
-};
-
 exports.formatCommentData = (comments, reference) => {
   return comments.map(({ belongs_to, created_by, ...restOfComment }) => {
     const newComment = {
