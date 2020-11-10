@@ -68,6 +68,14 @@ describe("/api", () => {
             });
           });
       });
+      test("GET - 404 - for a username that does not exist ", () => {
+        return request(app)
+          .get("/api/users/notAUser")
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("Username not found");
+          });
+      });
     });
   });
   describe("/missingRoute", () => {
