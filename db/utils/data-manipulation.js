@@ -18,12 +18,15 @@ exports.formatTimestamp = (dataArray) => {
 };
 
 exports.formatCommentData = (comments, reference) => {
-  return comments.map(({ belongs_to, created_by, ...restOfComment }) => {
-    const newComment = {
-      ...restOfComment,
-      article_id: reference[belongs_to],
-      author: created_by,
-    };
-    return newComment;
-  });
+  const updatedComments = comments.map(
+    ({ belongs_to, created_by, ...restOfComment }) => {
+      const newComment = {
+        ...restOfComment,
+        article_id: reference[belongs_to],
+        author: created_by,
+      };
+      return newComment;
+    }
+  );
+  return this.formatTimestamp(updatedComments);
 };
