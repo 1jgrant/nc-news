@@ -129,12 +129,20 @@ describe("/api", () => {
             expect(res.body.article.comment_count).toBe(2);
           });
       });
-      test("GET - 404 - for an article_id that does not exist ", () => {
+      test("GET - 404 - for an article_id that does not exist", () => {
         return request(app)
           .get("/api/articles/500")
           .expect(404)
           .then((res) => {
             expect(res.body.msg).toBe("Article not found");
+          });
+      });
+      test("GET - 400 - for a non numeric article id", () => {
+        return request(app)
+          .get("/api/articles/five")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("Bad Request");
           });
       });
     });

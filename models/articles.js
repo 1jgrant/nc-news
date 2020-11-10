@@ -1,6 +1,12 @@
 const db = require("../db/connection");
 
 const fetchArticleById = (articleId) => {
+  //   if (!Number(articleId.article_id)) {
+  //     return Promise.reject({
+  //       status: 400,
+  //       msg: "Bad Request: article_id must be a number",
+  //     });
+  //   }
   return db
     .select("*")
     .from("articles")
