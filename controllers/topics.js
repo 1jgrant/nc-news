@@ -1,4 +1,4 @@
-const { fetchTopics } = require('../models/topicsModel');
+const { fetchTopics } = require("../models/topics");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics().then((topics) => {
