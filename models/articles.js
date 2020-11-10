@@ -8,17 +8,13 @@ const fetchArticleById = (articleId) => {
     .returning("*")
     .then((res) => {
       const article = res[0];
-      const commentCount = db
-        .select("*")
-        .from("comments")
+      const count = db("comments")
         .where("article_id", "=", article.article_id)
-        .returning("*")
-        .then((res) => {
-          return res.length;
-        });
-      return Promise.all([commentCount, article]);
+        .count("article_id");
+      return Promise.all([count, res[0]]);
     })
-    .then(([commentCount, article]) => {
+    .then(([count, article]) => {
+      const commentCount = Number(count[0].count);
       return { ...article, comment_count: commentCount };
     });
 };
