@@ -77,6 +77,20 @@ describe("/api", () => {
           });
       });
     });
+    describe("INVALID METHODS", () => {
+      test("405 - post, patch, delete, put", () => {
+        const invalidMethods = ["post", "patch", "put", "delete"];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]("/api/users/lurker")
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe("Invalid Method");
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
   });
   describe("/missingRoute", () => {
     test("All Methods - 404", () => {
