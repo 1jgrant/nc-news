@@ -92,6 +92,19 @@ describe("/api", () => {
       });
     });
   });
+  describe("/articles", () => {});
+  describe("/articles/:article_id", () => {
+    describe("GET", () => {
+      test("GET - 200 - should respond with an article object containing info for a single article", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toMatchObject({ article: expect.any(Object) });
+          });
+      });
+    });
+  });
   describe("/missingRoute", () => {
     test("All Methods - 404", () => {
       const allMethods = ["get", "post", "put", "patch", "delete"];
