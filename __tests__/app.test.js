@@ -103,6 +103,24 @@ describe("/api", () => {
             expect(res.body).toMatchObject({ article: expect.any(Object) });
           });
       });
+      test("GET - 200 - article object should have the required keys", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toMatchObject({
+              article: {
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              },
+            });
+          });
+      });
     });
   });
   describe("/missingRoute", () => {
