@@ -8,13 +8,12 @@ exports.createRefObj = (dataArray, newKey, newValue) => {
   return refObj;
 };
 
-exports.formatTimestamp = (rows) => {
-  return rows.map(({ created_at, ...restOfKeys }) => {
+exports.formatTimestamp = (dataArray) => {
+  return dataArray.map(({ created_at, ...restOfKeys }) => {
     const date = new Date(created_at);
     const dateStr = date.toISOString();
-    //const newCreated_at = `${dateStr.slice(0, 10)} ${dateStr.slice(11)}`;
-    const newArticle = { ...restOfKeys, created_at: dateStr };
-    return newArticle;
+    restOfKeys.created_at = dateStr;
+    return restOfKeys;
   });
 };
 
