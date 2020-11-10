@@ -7,10 +7,7 @@ const fetchArticleById = (articleId) => {
     .where(articleId)
     .returning("*")
     .then((res) => {
-      const article = res[0];
-      const count = db("comments")
-        .where("article_id", "=", article.article_id)
-        .count("article_id");
+      const count = db("comments").where(articleId).count();
       return Promise.all([count, res[0]]);
     })
     .then(([count, article]) => {
