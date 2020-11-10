@@ -41,6 +41,35 @@ describe("/api", () => {
       });
     });
   });
+  describe("/users", () => {});
+  describe("/users/:username", () => {
+    describe("GET", () => {
+      test("GET - 200 - should respond with a user object containing a single user", () => {
+        return request(app)
+          .get("/api/users/lurker")
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toMatchObject({
+              user: expect.any(Object),
+            });
+          });
+      });
+      test("GET - 200 - user object should have the required keys", () => {
+        return request(app)
+          .get("/api/users/lurker")
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toMatchObject({
+              user: {
+                username: expect.any(String),
+                avatar_url: expect.any(String),
+                name: expect.any(String),
+              },
+            });
+          });
+      });
+    });
+  });
   describe("/missingRoute", () => {
     test("All Methods - 404", () => {
       const allMethods = ["get", "post", "put", "patch", "delete"];
