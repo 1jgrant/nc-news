@@ -1,4 +1,13 @@
 // extract any functions you are using to manipulate your data, into this file
+
+exports.createRefObj = (dataArray, newKey, newValue) => {
+  const refObj = {};
+  dataArray.forEach((dataObj) => {
+    refObj[dataObj[newKey]] = dataObj[newValue];
+  });
+  return refObj;
+};
+
 exports.formatTimestamp = (rows) => {
   return rows.map(({ created_at, ...restOfKeys }) => {
     const date = new Date(created_at);
