@@ -7,4 +7,7 @@ const send404 = (req, res, next) => {
   res.status(404).send({ msg: "Route not found" });
 };
 
-module.exports = { handleInternalErrors, send404 };
+const send405 = (req, res, next) => {
+  res.status(405).send({ msg: "Invalid Method" });
+};
+module.exports = { handleInternalErrors, send404, send405 };

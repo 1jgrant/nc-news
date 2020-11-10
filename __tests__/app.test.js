@@ -26,6 +26,20 @@ describe("/api", () => {
           });
       });
     });
+    describe("INVALID METHODS", () => {
+      test("405 - patch, delete, put", () => {
+        const invalidMethods = ["patch", "put", "delete"];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]("/api/topics")
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe("Invalid Method");
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
   });
   describe("/missingRoute", () => {
     test("All Methods - 404", () => {
