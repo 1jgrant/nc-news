@@ -7,6 +7,9 @@ const fetchArticleById = (articleId) => {
     .where(articleId)
     .returning("*")
     .then((res) => {
+      if (res.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
       const count = db("comments").where(articleId).count();
       return Promise.all([count, res[0]]);
     })

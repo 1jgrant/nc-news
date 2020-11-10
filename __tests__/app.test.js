@@ -121,6 +121,22 @@ describe("/api", () => {
             });
           });
       });
+      test("GET - 200 - comment count should be equal to the number of comments related to the object", () => {
+        return request(app)
+          .get("/api/articles/5")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.article.comment_count).toBe(2);
+          });
+      });
+      test("GET - 404 - for an article_id that does not exist ", () => {
+        return request(app)
+          .get("/api/articles/500")
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("Article not found");
+          });
+      });
     });
   });
   describe("/missingRoute", () => {
