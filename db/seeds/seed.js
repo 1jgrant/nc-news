@@ -6,9 +6,9 @@ const {
 } = require("../data/index.js");
 const {
   formatTimestamp,
-  createArticleRef,
+  createRefObj,
   formatCommentData,
-} = require("../utils/formatting");
+} = require("../utils/data-manipulation");
 
 // topic -> user -> article -> comment
 
@@ -32,14 +32,15 @@ exports.seed = function (knex) {
     .then((articleRows) => {
       console.log(`inserted ${articleRows.length} articles`);
       //console.log(articleRows);
-      const articleRef = createArticleRef(articleRows);
+      // const articleRef = createArticleRef(articleRows);
+      const articleRef = createRefObj(articleRows, "title", "article_id");
       const format1 = formatCommentData(commentsData, articleRef);
       const formattedComments = formatTimestamp(format1);
       //console.log(formattedComments);
       return knex("comments").insert(formattedComments).returning("*");
     })
     .then((commentRows) => {
-      console.log(commentRows[0]);
+      //console.log(commentRows[0]);
       console.log(`inserted ${commentRows.length} comments`);
     });
 };
