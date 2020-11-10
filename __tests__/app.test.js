@@ -146,6 +146,20 @@ describe("/api", () => {
           });
       });
     });
+    describe("INVALID METHODS", () => {
+      test("405 - post, put", () => {
+        const invalidMethods = ["post", "put"];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]("/api/articles/1")
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe("Invalid Method");
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
   });
   describe("/missingRoute", () => {
     test("All Methods - 404", () => {
