@@ -146,7 +146,17 @@ describe("/api", () => {
           });
       });
     });
-    describe("PATCH", () => {});
+    describe("PATCH", () => {
+      test("PATCH - 200 - should modify the number of votes and respond with the updated article body", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then((res) => {
+            expect(res[0].article.votes).toBe(101);
+          });
+      });
+    });
     describe("INVALID METHODS", () => {
       test("405 - post, put", () => {
         const invalidMethods = ["post", "put"];
