@@ -272,6 +272,14 @@ describe('/api', () => {
             });
           });
       });
+      test('GET - 200 - endpoint should ignore invalid queries', () => {
+        return request(app)
+          .get('/api/articles/1/comments?sort_by=invalidColumn')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments.length).toBe(13);
+          });
+      });
       test('GET - 404 - should respond with a 404 when article does not exist', () => {
         return request(app)
           .get('/api/articles/500/comment')

@@ -54,11 +54,14 @@ const createComment = (articleId, { username, body }) => {
 };
 
 const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
+  const validColumns = ['comment_id', 'votes', 'created_at', 'author', 'body'];
+  const sortColumn = validColumns.includes(sort_by) ? sort_by : 'created_at';
+  const orderDir = order === 'asc' ? 'asc' : 'desc';
   return db
     .select('comment_id', 'votes', 'created_at', 'author', 'body')
     .from('comments')
     .where(articleId)
-    .orderBy(sort_by || 'created_at', order || 'desc');
+    .orderBy(sortColumn, orderDir);
 };
 
 module.exports = {

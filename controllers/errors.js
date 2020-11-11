@@ -12,6 +12,10 @@ const handlePSQLErrors = (err, req, res, next) => {
       status: 400,
       msg: 'Bad Request: Incorrect comment format',
     },
+    // '42703': {
+    //   status: 400,
+    //   msg: 'Invalid query',
+    // },
   };
   if (errorsRef[err.code]) {
     res
