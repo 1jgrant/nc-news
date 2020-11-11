@@ -218,7 +218,9 @@ describe('/api', () => {
     });
   });
   describe('/articles/:article_id/comments', () => {
-    describe('GET', () => {});
+    describe('GET', () => {
+      test('GET - 200 - should respond with an array of comments for the given article_id', () => {});
+    });
     describe('POST', () => {
       test('POST - 201 - should create a new, correctly formatted comment', () => {
         return request(app)
@@ -272,6 +274,18 @@ describe('/api', () => {
                 body: 'Test comment body',
               },
             });
+          });
+      });
+      test("POST - 201 - adding a comment to an article should increment that article's comment count", () => {
+        return request(app)
+          .post('/api/articles/3/comments')
+          .send({ username: 'butter_bridge', body: 'Test comment body' })
+          .then((res) => {
+            return request(app)
+              .get('/api/articles/3')
+              .then((res) => {
+                expect(res.body.article.comment_count).toBe(1);
+              });
           });
       });
       test('POST - 422 - for an article_id that does not exist', () => {
