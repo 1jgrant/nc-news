@@ -242,6 +242,36 @@ describe('/api', () => {
             );
           });
       });
+      test('GET - 200 - responds with an array that is ordered by newest first by default', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments).toBeSortedBy('created_at', {
+              descending: true,
+            });
+          });
+      });
+      test('GET - 200 - comments can be ordered by any other valid column via query, descending by default', () => {
+        return request(app)
+          .get('/api/articles/1/comments?sort_by=votes')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments).toBeSortedBy('votes', {
+              descending: true,
+            });
+          });
+      });
+      test('GET - 200 - comments can be ordered in ascending order via query', () => {
+        return request(app)
+          .get('/api/articles/1/comments?sort_by=votes&order=asc')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments).toBeSortedBy('votes', {
+              descending: false,
+            });
+          });
+      });
       test('GET - 404 - should respond with a 404 when article does not exist', () => {
         return request(app)
           .get('/api/articles/500/comment')

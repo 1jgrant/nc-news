@@ -53,12 +53,12 @@ const createComment = (articleId, { username, body }) => {
     });
 };
 
-const fetchCommentsByArticleId = (articleId) => {
+const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
   return db
     .select('comment_id', 'votes', 'created_at', 'author', 'body')
     .from('comments')
     .where(articleId)
-    .returning('*');
+    .orderBy(sort_by || 'created_at', order || 'desc');
 };
 
 module.exports = {

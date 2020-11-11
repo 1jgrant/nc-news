@@ -36,7 +36,7 @@ const postComment = (req, res, next) => {
 };
 
 const getCommentsByArticleId = (req, res, next) => {
-  fetchCommentsByArticleId(req.params)
+  fetchCommentsByArticleId(req.params, req.query)
     .then((comments) => {
       //console.log({ comments });
       res.status(200).send({ comments });
