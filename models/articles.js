@@ -26,13 +26,19 @@ const fetchArticleById = (articleId) => {
 };
 
 const updateArticleById = (articleId, votes) => {
+  const inc = Number(votes.inc_votes)
+    ? { votes: votes.inc_votes }
+    : { votes: 1 };
   return db
     .select("*")
     .from("articles")
     .where("articles.article_id", articleId.article_id)
-    .increment({ votes: votes.inc_votes })
+    .increment(inc)
     .returning("*")
     .then((res) => {
+      if (res.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
       return res[0];
     });
 };

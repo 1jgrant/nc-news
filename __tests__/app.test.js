@@ -148,13 +148,57 @@ describe("/api", () => {
       });
     });
     describe("PATCH", () => {
-      test("PATCH - 200 - should modify the number of votes and respond with the updated article body", () => {
+      test("PATCH - 200 - should increase the number of votes by the requested number and respond with the updated article body", () => {
         return request(app)
           .patch("/api/articles/1")
-          .send({ inc_votes: 1 })
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedArticle.votes).toBe(102);
+          });
+      });
+      test("PATCH - 200 - should decrease the number of votes by the requested number and respond with the updated article body", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: -2 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedArticle.votes).toBe(98);
+          });
+      });
+      test("PATCH - 200 - default behaviour should be to increment vote count by 1 when req body is invalid", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: "five" })
           .expect(200)
           .then((res) => {
             expect(res.body.updatedArticle.votes).toBe(101);
+          });
+      });
+      test("PATCH - 200 - default behaviour should be to ignore other properties on the request body", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: 5, name: "Mitch" })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedArticle.votes).toBe(105);
+          });
+      });
+      test("PATCH - 404 - for an article_id that does not exist", () => {
+        return request(app)
+          .patch("/api/articles/500")
+          .send({ inc_votes: -2 })
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("Article not found");
+          });
+      });
+      test("GET - 400 - for a non numeric article id", () => {
+        return request(app)
+          .get("/api/articles/five")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("Bad Request");
           });
       });
     });
