@@ -11,8 +11,7 @@ exports.createRefObj = (dataArray, newKey, newValue) => {
 exports.formatTimestamp = (dataArray) => {
   return dataArray.map(({ created_at, ...restOfKeys }) => {
     const date = new Date(created_at);
-    const dateStr = date.toISOString();
-    restOfKeys.created_at = dateStr;
+    restOfKeys.created_at = date;
     return restOfKeys;
   });
 };
