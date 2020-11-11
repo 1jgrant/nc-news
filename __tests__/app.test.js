@@ -92,7 +92,9 @@ describe('/api', () => {
       });
     });
   });
-  describe('/articles', () => {});
+  describe('/articles', () => {
+    describe('Name of the group', () => {});
+  });
   describe('/articles/:article_id', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an article object containing info for a single article', () => {
@@ -344,7 +346,7 @@ describe('/api', () => {
             });
           });
       });
-      test("POST - adding a comment to an article should increment that article's comment count", () => {
+      test("POST - 201 - adding a comment to an article should increment that article's comment count", () => {
         return request(app)
           .post('/api/articles/3/comments')
           .send({ username: 'butter_bridge', body: 'Test comment body' })
@@ -384,7 +386,20 @@ describe('/api', () => {
           });
       });
     });
-    describe('INVALID METHODS', () => {});
+    describe('INVALID METHODS', () => {
+      test('405 - put, patch, delete', () => {
+        const invalidMethods = ['put', 'patch', 'delete'];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]('/api/articles/1/comments')
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe('Invalid Method');
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
   });
   describe('/missingRoute', () => {
     test('All Methods - 404', () => {
