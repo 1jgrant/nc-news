@@ -1,4 +1,4 @@
-const { fetchArticleById } = require("../models/articles");
+const { fetchArticleById, updateArticleById } = require("../models/articles");
 
 const getArticleById = (req, res, next) => {
   fetchArticleById(req.params)
@@ -10,4 +10,14 @@ const getArticleById = (req, res, next) => {
     });
 };
 
-module.exports = { getArticleById };
+const patchArticleById = (req, res, next) => {
+  updateArticleById(req.params, req.body)
+    .then((updatedArticle) => {
+      res.status(200).send({ updatedArticle });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticleById, patchArticleById };

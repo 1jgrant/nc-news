@@ -1,5 +1,6 @@
 const handlePSQLErrors = (err, req, res, next) => {
   const badReqCodes = ["22P02"];
+  //reference object with error codes & msgs?
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad Request" });
   } else {

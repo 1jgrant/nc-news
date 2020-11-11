@@ -1,4 +1,3 @@
-const articles = require("../controllers/articles");
 const db = require("../db/connection");
 
 const fetchArticleById = (articleId) => {
@@ -11,7 +10,7 @@ const fetchArticleById = (articleId) => {
   return db
     .select("articles.*")
     .from("articles")
-    .where("articles.article_id", "=", articleId.article_id)
+    .where("articles.article_id", articleId.article_id)
     .count({ comment_count: "comment_id" })
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
@@ -26,4 +25,16 @@ const fetchArticleById = (articleId) => {
     });
 };
 
-module.exports = { fetchArticleById };
+const updateArticleById = (articleId, votes) => {
+  return db
+    .select("*")
+    .from("articles")
+    .where("articles.article_id", articleId.article_id)
+    .increment({ votes: votes.inc_votes })
+    .returning("*")
+    .then((res) => {
+      return res[0];
+    });
+};
+
+module.exports = { fetchArticleById, updateArticleById };

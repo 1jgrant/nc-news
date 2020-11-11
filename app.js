@@ -8,6 +8,7 @@ const {
   send404,
 } = require("./controllers/errors");
 
+app.use(express.json());
 app.use("/api", apiRouter);
 app.use("/*", send404);
 

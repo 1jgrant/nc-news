@@ -94,7 +94,7 @@ describe("/api", () => {
   });
   describe("/articles", () => {});
   describe("/articles/:article_id", () => {
-    describe.only("GET", () => {
+    describe("GET", () => {
       test("GET - 200 - should respond with an article object containing info for a single article", () => {
         return request(app)
           .get("/api/articles/1")
@@ -154,7 +154,7 @@ describe("/api", () => {
           .send({ inc_votes: 1 })
           .expect(200)
           .then((res) => {
-            expect(res[0].article.votes).toBe(101);
+            expect(res.body.updatedArticle.votes).toBe(101);
           });
       });
     });
