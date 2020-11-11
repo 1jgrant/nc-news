@@ -253,6 +253,27 @@ describe('/api', () => {
             });
           });
       });
+      test('POST - 201 - should ignore additional properties in the request body', () => {
+        return request(app)
+          .post('/api/articles/3/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'Test comment body',
+            extraProp: 'unwanted data',
+          })
+          .expect(201)
+          .then((res) => {
+            expect(res.body).toMatchObject({
+              newComment: {
+                comment_id: 19,
+                author: 'butter_bridge',
+                article_id: 3,
+                votes: 0,
+                body: 'Test comment body',
+              },
+            });
+          });
+      });
       test('POST - 400 - for an article_id that does not exist', () => {
         return request(app)
           .post('/api/articles/500/comments')
