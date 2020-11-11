@@ -94,7 +94,7 @@ describe("/api", () => {
   });
   describe("/articles", () => {});
   describe("/articles/:article_id", () => {
-    describe("GET", () => {
+    describe.only("GET", () => {
       test("GET - 200 - should respond with an article object containing info for a single article", () => {
         return request(app)
           .get("/api/articles/1")
@@ -116,6 +116,7 @@ describe("/api", () => {
                 body: expect.any(String),
                 topic: expect.any(String),
                 votes: expect.any(Number),
+                created_at: "2018-11-15T12:21:54.171Z",
                 comment_count: expect.any(Number),
               },
             });
