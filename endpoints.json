@@ -20,7 +20,6 @@
         "name": "userForename"
       }
     }
-    
   },
   "GET /api/articles/article_id": {
     "description":"serves an object of a single article",
