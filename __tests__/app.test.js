@@ -253,7 +253,7 @@ describe('/api', () => {
             });
           });
       });
-      test.only('POST - 201 - should ignore additional properties in the request body', () => {
+      test('POST - 201 - should ignore additional properties in the request body', () => {
         return request(app)
           .post('/api/articles/3/comments')
           .send({
@@ -274,13 +274,31 @@ describe('/api', () => {
             });
           });
       });
-      test('POST - 400 - for an article_id that does not exist', () => {
+      test('POST - 422 - for an article_id that does not exist', () => {
         return request(app)
           .post('/api/articles/500/comments')
           .send({ username: 'butter_bridge', body: 'Test comment body' })
+          .expect(422)
+          .then((res) => {
+            expect(res.body.msg).toBe('Unprocessable Entity');
+          });
+      });
+      test('POST - 400 - for a comment without a username', () => {
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send({ body: 'Test comment body' })
           .expect(400)
           .then((res) => {
-            expect(res.body.msg).toBe('Bad Request: Article does not exist');
+            expect(res.body.msg).toBe('Bad Request: Incorrect comment format');
+          });
+      });
+      test('POST - 422 - for correctly formatted comment with a non existent username', () => {
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send({ username: 'notAUser', body: 'Test comment body' })
+          .expect(422)
+          .then((res) => {
+            expect(res.body.msg).toBe('Unprocessable Entity');
           });
       });
     });

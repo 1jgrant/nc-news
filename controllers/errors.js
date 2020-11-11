@@ -1,10 +1,22 @@
 const handlePSQLErrors = (err, req, res, next) => {
   const errorsRef = {
-    '22P02': 'Bad Request',
-    '23503': 'Bad Request: Article does not exist',
+    '22P02': {
+      status: 400,
+      msg: 'Bad Request',
+    },
+    '23503': {
+      status: 422,
+      msg: 'Unprocessable Entity',
+    },
+    '23502': {
+      status: 400,
+      msg: 'Bad Request: Incorrect comment format',
+    },
   };
   if (errorsRef[err.code]) {
-    res.status(400).send({ msg: errorsRef[err.code] });
+    res
+      .status(errorsRef[err.code].status)
+      .send({ msg: errorsRef[err.code].msg });
   } else {
     next(err);
   }
