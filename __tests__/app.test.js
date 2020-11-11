@@ -219,7 +219,37 @@ describe('/api', () => {
   });
   describe('/articles/:article_id/comments', () => {
     describe('GET', () => {
-      test('GET - 200 - should respond with an array of comments for the given article_id', () => {});
+      test('GET - 200 - should respond with an array of all comments for the given article_id', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments.length).toBe(13);
+          });
+      });
+      test('GET - 200 - comments in the array should have the correct format', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .then((res) => {
+            expect(Object.keys(res.body.comments[0])).toEqual(
+              expect.arrayContaining([
+                'comment_id',
+                'author',
+                'votes',
+                'created_at',
+                'body',
+              ]),
+            );
+          });
+      });
+      test('GET - 404 - should respond with a 404 when article does not exist', () => {
+        return request(app)
+          .get('/api/articles/500/comment')
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Route not found');
+          });
+      });
     });
     describe('POST', () => {
       test('POST - 201 - should create a new, correctly formatted comment', () => {
@@ -276,7 +306,7 @@ describe('/api', () => {
             });
           });
       });
-      test("POST - 201 - adding a comment to an article should increment that article's comment count", () => {
+      test("POST - adding a comment to an article should increment that article's comment count", () => {
         return request(app)
           .post('/api/articles/3/comments')
           .send({ username: 'butter_bridge', body: 'Test comment body' })

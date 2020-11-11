@@ -53,4 +53,17 @@ const createComment = (articleId, { username, body }) => {
     });
 };
 
-module.exports = { fetchArticleById, updateArticleById, createComment };
+const fetchCommentsByArticleId = (articleId) => {
+  return db
+    .select('comment_id', 'votes', 'created_at', 'author', 'body')
+    .from('comments')
+    .where(articleId)
+    .returning('*');
+};
+
+module.exports = {
+  fetchArticleById,
+  updateArticleById,
+  createComment,
+  fetchCommentsByArticleId,
+};
