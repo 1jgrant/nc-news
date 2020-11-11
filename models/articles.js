@@ -43,8 +43,8 @@ const updateArticleById = (articleId, votes) => {
     });
 };
 
-const createComment = (articleId, { username, ...body }) => {
-  const comment = { author: username, ...articleId, ...body };
+const createComment = (articleId, { username, body }) => {
+  const comment = { author: username, body: body, ...articleId };
   return db('comments')
     .insert(comment)
     .returning('*')

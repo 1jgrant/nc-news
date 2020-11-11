@@ -253,7 +253,7 @@ describe('/api', () => {
             });
           });
       });
-      test('POST - 201 - should ignore additional properties in the request body', () => {
+      test.only('POST - 201 - should ignore additional properties in the request body', () => {
         return request(app)
           .post('/api/articles/3/comments')
           .send({
