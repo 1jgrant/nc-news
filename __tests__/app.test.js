@@ -146,6 +146,7 @@ describe("/api", () => {
           });
       });
     });
+    describe("PATCH", () => {});
     describe("INVALID METHODS", () => {
       test("405 - post, put", () => {
         const invalidMethods = ["post", "put"];
