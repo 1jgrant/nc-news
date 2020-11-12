@@ -626,6 +626,21 @@ describe('/api', () => {
       });
     });
   });
+  describe.only('/comments/:comment_id', () => {
+    describe('PATCH', () => {
+      test('PATCH - 200 - should update the vote count on the comment and respond with the updated comment', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedComment.votes).toBe(17);
+          });
+      });
+    });
+    describe('DELETE', () => {});
+    describe('INVALID METHODS', () => {});
+  });
   describe('/missingRoute', () => {
     test('All Methods - 404', () => {
       const allMethods = ['get', 'post', 'put', 'patch', 'delete'];
