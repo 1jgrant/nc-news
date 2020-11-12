@@ -156,7 +156,7 @@ describe('/api', () => {
             });
           });
       });
-      test('GET - 200 - articles be filtered by author via query', () => {
+      test('GET - 200 - articles may be filtered by author via query', () => {
         return request(app)
           .get('/api/articles?author=rogersop')
           .expect(200)
@@ -166,6 +166,71 @@ describe('/api', () => {
               expect(article.author).toBe('rogersop');
             });
           });
+      });
+      test('GET - 200 - articles may be filtered by topic via query', () => {
+        return request(app)
+          .get('/api/articles?topic=cats')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(1);
+            expect(res.body.articles[0].topic).toBe('cats');
+          });
+      });
+      test('GET - 200 - endpoint should ignore invalid sort_by column', () => {
+        return request(app)
+          .get('/api/articles?sort_by=invalidColumn')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(12);
+          });
+      });
+      test('GET - 200 - endpoint should ignore invalid order by', () => {
+        return request(app)
+          .get('/api/articles?sort_by=votes&order=down')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toBeSortedBy('votes', {
+              descending: true,
+            });
+          });
+      });
+      test('GET - 200 - endpoint should ignore invalid queries', () => {
+        return request(app)
+          .get('/api/articles?writer=rogersop')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(12);
+          });
+      });
+      test('GET - 200 - should respond with empty array when queried author is a user but has no articles', () => {
+        return request(app)
+          .get('/api/articles?author=lurker')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toEqual([]);
+          });
+      });
+      test('GET - 404 - should respond with a 404 when queried author is not found', () => {
+        return request(app)
+          .get('/api/articles?author=notAUser')
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Author not found');
+          });
+      });
+    });
+    describe('INVALID METHODS', () => {
+      test('405 - put, patch, delete', () => {
+        const invalidMethods = ['put', 'patch', 'delete'];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]('/api/articles')
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe('Invalid Method');
+            });
+        });
+        return Promise.all(requestPromises);
       });
     });
   });

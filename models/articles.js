@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const { fetchUserByUsername } = require('./users');
 
 const fetchArticleById = (articleId) => {
   //   if (!Number(articleId.article_id)) {
@@ -64,26 +65,69 @@ const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
     .orderBy(sortColumn, orderDir);
 };
 
-const fetchArticles = ({ sort_by, order, author }) => {
-  console.log(author);
+const fetchArticles = ({ sort_by, order, author, topic }) => {
+  // logic to check if sort_by query is on a valid column
+  // using array first, should update to fetch all valid columns via request
+  const validColumns = [
+    'author',
+    'title',
+    'article_id',
+    'topic',
+    'created_at',
+    'votes',
+    'comment_count',
+  ];
+  const sortColumn = validColumns.includes(sort_by) ? sort_by : 'created_at';
+  const orderDir = order === 'asc' ? 'asc' : 'desc';
+  // query the db
   return db
     .select('articles.*')
     .from('articles')
     .count({ comment_count: 'comment_id' })
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .groupBy('articles.article_id')
-    .orderBy(sort_by || 'created_at', order || 'desc')
+    .orderBy(sortColumn, orderDir)
     .modify((query) => {
       if (author) query.where({ 'articles.author': author });
+      if (topic) query.where({ topic: topic });
     })
-    .then((res) => {
+    .then((articles) => {
+      // when there are no articles in the response, we need to check if the
+      // author exists or not and handle appropriately
+      if (articles.length === 0) {
+        return Promise.all([articles, checkAuthorExists(author)]);
+      } else return [articles, true];
+    })
+    .then(([articles, authorExists]) => {
+      if (!authorExists) {
+        return Promise.reject({ status: 404, msg: 'Author not found' });
+      }
       // knex count returns string, convert counts to numbers
-      res.forEach((article) => {
+      articles.forEach((article) => {
         article.comment_count = Number(article.comment_count);
       });
-      return res;
+      return articles;
     });
 };
+
+const checkAuthorExists = (author) => {
+  return db
+    .select('*')
+    .from('users')
+    .where({ username: author })
+    .then((author) => {
+      return author.length === 0 ? false : true;
+    });
+};
+
+// const checkColumnExists = (column, table) => {
+//   return db
+//     .select('*')
+//     .from(table)
+//     .then((res) => {
+//       console.log('columns>>>', res);
+//     });
+// };
 
 module.exports = {
   fetchArticleById,
