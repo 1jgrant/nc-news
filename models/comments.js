@@ -21,7 +21,9 @@ const removeComment = (commentId) => {
     .del()
     .where(commentId)
     .then((delCount) => {
-      console.log(delCount);
+      if (delCount === 0) {
+        return Promise.reject({ status: 404, msg: 'Comment not found' });
+      }
     });
 };
 

@@ -682,7 +682,7 @@ describe('/api', () => {
           });
       });
     });
-    describe.only('DELETE', () => {
+    describe('DELETE', () => {
       test('DELETE - 204 - should delete the requested comment', () => {
         return request(app)
           .delete('/api/comments/14')
@@ -692,6 +692,14 @@ describe('/api', () => {
           })
           .then((res) => {
             expect(res.body.article.comment_count).toBe(1);
+          });
+      });
+      test('DELETE - 404 - for a comment id that does not exist', () => {
+        return request(app)
+          .delete('/api/comments/500')
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Comment not found');
           });
       });
     });
