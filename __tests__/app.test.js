@@ -420,9 +420,9 @@ describe('/api', () => {
             expect(res.body.msg).toBe('Article not found');
           });
       });
-      test('GET - 400 - for a non numeric article id', () => {
+      test('PATCH - 400 - for a non numeric article id', () => {
         return request(app)
-          .get('/api/articles/five')
+          .patch('/api/articles/five')
           .expect(400)
           .then((res) => {
             expect(res.body.msg).toBe('Bad Request');
@@ -626,7 +626,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/comments/:comment_id', () => {
+  describe('/comments/:comment_id', () => {
     describe('PATCH', () => {
       test('PATCH - 200 - should update the vote count on the comment and respond with the updated comment', () => {
         return request(app)
@@ -653,6 +653,32 @@ describe('/api', () => {
           .expect(200)
           .then((res) => {
             expect(res.body.updatedComment.votes).toBe(17);
+          });
+      });
+      test('PATCH - 200 - default behaviour should be to ignore other properties on the request body', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({ inc_votes: 5, name: 'Mitch' })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedComment.votes).toBe(21);
+          });
+      });
+      test('PATCH - 404 - for a comment_id that does not exist', () => {
+        return request(app)
+          .patch('/api/comments/500')
+          .send({ inc_votes: -2 })
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Comment not found');
+          });
+      });
+      test('PATCH - 400 - for a non numeric comment id', () => {
+        return request(app)
+          .patch('/api/comments/five')
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe('Bad Request');
           });
       });
     });

@@ -1,8 +1,6 @@
 const db = require('../db/connection');
 
 const updateComment = (articleId, newVotes) => {
-  console.log(articleId);
-  console.log(newVotes);
   const inc = Number(newVotes.inc_votes)
     ? { votes: newVotes.inc_votes }
     : { votes: 1 };
@@ -11,7 +9,9 @@ const updateComment = (articleId, newVotes) => {
     .increment(inc)
     .returning('*')
     .then((res) => {
-      console.log(res);
+      if (res.length === 0) {
+        return Promise.reject({ status: 404, msg: 'Comment not found' });
+      }
       return res[0];
     });
 };
