@@ -93,7 +93,40 @@ describe('/api', () => {
     });
   });
   describe('/articles', () => {
-    describe('Name of the group', () => {});
+    describe('GET', () => {
+      test('GET - 200 - should respond with an array of all article objects', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(12);
+          });
+      });
+      test('GET - 200 - objects should have the required keys', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles[0]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            });
+          });
+      });
+      test.only('GET - 200 - comment_count should be equal to the number of comments linked to an article', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles[5].comment_count).toBe(2);
+          });
+      });
+    });
   });
   describe('/articles/:article_id', () => {
     describe('GET', () => {

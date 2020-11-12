@@ -64,9 +64,27 @@ const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
     .orderBy(sortColumn, orderDir);
 };
 
+const fetchArticles = () => {
+  return db
+    .select('articles.*')
+    .from('articles')
+    .count({ comment_count: 'comment_id' })
+    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .groupBy('articles.article_id')
+    .returning('*')
+    .then((res) => {
+      // knex count returns string, convert counts to numbers
+      res.forEach((article) => {
+        article.comment_count = Number(article.comment_count);
+      });
+      return res;
+    });
+};
+
 module.exports = {
   fetchArticleById,
   updateArticleById,
   createComment,
   fetchCommentsByArticleId,
+  fetchArticles,
 };

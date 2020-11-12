@@ -4,6 +4,7 @@ const {
   patchArticleById,
   postComment,
   getCommentsByArticleId,
+  getArticles,
 } = require('../controllers/articles');
 const { send405 } = require('../controllers/errors');
 
@@ -18,5 +19,7 @@ articlesRouter
   .get(getCommentsByArticleId)
   .post(postComment)
   .all(send405);
+
+articlesRouter.route('/').get(getArticles);
 
 module.exports = articlesRouter;
