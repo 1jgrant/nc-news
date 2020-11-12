@@ -47,9 +47,9 @@ const getCommentsByArticleId = (req, res, next) => {
 };
 
 const getArticles = (req, res, next) => {
-  fetchArticles()
+  fetchArticles(req.query)
     .then((articles) => {
-      // console.log({ articles });
+      console.log({ articles });
       res.status(200).send({ articles });
     })
     .catch((err) => {

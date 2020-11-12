@@ -118,12 +118,22 @@ describe('/api', () => {
             });
           });
       });
-      test.only('GET - 200 - comment_count should be equal to the number of comments linked to an article', () => {
+      test('GET - 200 - comment_count should be equal to the number of comments linked to an article', () => {
         return request(app)
           .get('/api/articles')
           .expect(200)
           .then((res) => {
-            expect(res.body.articles[5].comment_count).toBe(2);
+            expect(res.body.articles[8].comment_count).toBe(2);
+          });
+      });
+      test('GET - 200 - articles should be sorted by descending date order by default', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toBeSortedBy('created_at', {
+              descending: true,
+            });
           });
       });
     });
