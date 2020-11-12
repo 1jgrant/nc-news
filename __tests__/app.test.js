@@ -161,10 +161,10 @@ describe('/api', () => {
           .get('/api/articles?author=rogersop')
           .expect(200)
           .then((res) => {
-            expect(res.body.articles.length).toBe(3);
-            res.body.articles.forEach((article) => {
-              expect(article.author).toBe('rogersop');
-            });
+            const hasCorrectAuthor = res.body.articles.every(
+              (article) => article.author === 'rogersop',
+            );
+            expect(hasCorrectAuthor).toBe(true);
           });
       });
       test('GET - 200 - articles may be filtered by topic via query', () => {
