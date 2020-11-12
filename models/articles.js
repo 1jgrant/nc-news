@@ -120,6 +120,17 @@ const checkAuthorExists = (author) => {
     });
 };
 
+const createArticle = ({ title, topic, author, body }) => {
+  const newArticle = { title, topic, author, body };
+  console.log(newArticle);
+  return db('articles')
+    .insert(newArticle)
+    .returning('*')
+    .then((res) => {
+      return res[0];
+    });
+};
+
 // const checkColumnExists = (column, table) => {
 //   return db
 //     .select('*')
@@ -135,4 +146,5 @@ module.exports = {
   createComment,
   fetchCommentsByArticleId,
   fetchArticles,
+  createArticle,
 };

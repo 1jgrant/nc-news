@@ -92,7 +92,7 @@ describe('/api', () => {
       });
     });
   });
-  describe('/articles', () => {
+  describe.only('/articles', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of all article objects', () => {
         return request(app)
@@ -216,6 +216,53 @@ describe('/api', () => {
           .expect(404)
           .then((res) => {
             expect(res.body.msg).toBe('Author not found');
+          });
+      });
+    });
+    describe('POST', () => {
+      test('POST - 201 - should create a new, correctly formatted article', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            title: 'Test article',
+            topic: 'cats',
+            author: 'butter_bridge',
+            body: 'testing testing',
+          })
+          .expect(201)
+          .then((res) => {
+            expect(res.body.newArticle).toMatchObject({
+              article_id: 13,
+              title: 'Test article',
+              votes: 0,
+              topic: 'cats',
+              author: 'butter_bridge',
+              body: 'testing testing',
+              created_at: expect.any(String),
+            });
+          });
+      });
+      test('POST - 201 - should ignore additional properties on request body', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            title: 'Test article',
+            topic: 'cats',
+            author: 'butter_bridge',
+            body: 'testing testing',
+            notAColumn: 'invalid',
+          })
+          .expect(201)
+          .then((res) => {
+            expect(res.body.newArticle).toMatchObject({
+              article_id: 13,
+              title: 'Test article',
+              votes: 0,
+              topic: 'cats',
+              author: 'butter_bridge',
+              body: 'testing testing',
+              created_at: expect.any(String),
+            });
           });
       });
     });

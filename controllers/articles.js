@@ -4,6 +4,7 @@ const {
   createComment,
   fetchCommentsByArticleId,
   fetchArticles,
+  createArticle,
 } = require('../models/articles');
 
 const getArticleById = (req, res, next) => {
@@ -11,9 +12,7 @@ const getArticleById = (req, res, next) => {
     .then((article) => {
       res.status(200).send({ article });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const patchArticleById = (req, res, next) => {
@@ -49,12 +48,20 @@ const getCommentsByArticleId = (req, res, next) => {
 const getArticles = (req, res, next) => {
   fetchArticles(req.query)
     .then((articles) => {
-      //console.log({ articles });
       res.status(200).send({ articles });
     })
     .catch((err) => {
       next(err);
     });
+};
+
+const postArticle = (req, res, next) => {
+  createArticle(req.body)
+    .then((newArticle) => {
+      console.log({ newArticle });
+      res.status(201).send({ newArticle });
+    })
+    .catch(next);
 };
 
 module.exports = {
@@ -63,4 +70,5 @@ module.exports = {
   postComment,
   getCommentsByArticleId,
   getArticles,
+  postArticle,
 };
