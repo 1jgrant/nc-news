@@ -58,7 +58,7 @@ const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
     .orderBy(sortColumn, orderDir);
 };
 
-const fetchArticles = ({ sort_by, order, author, topic }) => {
+const fetchArticles = ({ sort_by, order, author, topic, limit }) => {
   // logic to check if sort_by query is on a valid column
   // using array first, should update to fetch all valid columns via request
   const validColumns = [
@@ -80,6 +80,7 @@ const fetchArticles = ({ sort_by, order, author, topic }) => {
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .groupBy('articles.article_id')
     .orderBy(sortColumn, orderDir)
+    .limit(limit || 10)
     .modify((query) => {
       if (author) query.where({ 'articles.author': author });
       if (topic) query.where({ topic: topic });

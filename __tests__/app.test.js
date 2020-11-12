@@ -121,14 +121,14 @@ describe('/api', () => {
       });
     });
   });
-  describe('/articles', () => {
+  describe.only('/articles', () => {
     describe('GET', () => {
-      test('GET - 200 - should respond with an array of all article objects', () => {
+      test('GET - 200 - should respond with an array of all article objects, limited to 10 by default', () => {
         return request(app)
           .get('/api/articles')
           .expect(200)
           .then((res) => {
-            expect(res.body.articles.length).toBe(12);
+            expect(res.body.articles.length).toBe(10);
           });
       });
       test('GET - 200 - objects should have the required keys', () => {
@@ -205,12 +205,20 @@ describe('/api', () => {
             expect(res.body.articles[0].topic).toBe('cats');
           });
       });
+      test('GET - 200 - articles limit should be adjustable via query', () => {
+        return request(app)
+          .get('/api/articles?limit=15')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(12);
+          });
+      });
       test('GET - 200 - endpoint should ignore invalid sort_by column', () => {
         return request(app)
           .get('/api/articles?sort_by=invalidColumn')
           .expect(200)
           .then((res) => {
-            expect(res.body.articles.length).toBe(12);
+            expect(res.body.articles.length).toBe(10);
           });
       });
       test('GET - 200 - endpoint should ignore invalid order by', () => {
@@ -228,7 +236,7 @@ describe('/api', () => {
           .get('/api/articles?writer=rogersop')
           .expect(200)
           .then((res) => {
-            expect(res.body.articles.length).toBe(12);
+            expect(res.body.articles.length).toBe(10);
           });
       });
       test('GET - 200 - should respond with empty array when queried author is a user but has no articles', () => {
