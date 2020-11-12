@@ -136,7 +136,9 @@ const removeArticle = (articleId) => {
     .del()
     .where(articleId)
     .then((delCount) => {
-      console.log(delCount);
+      if (delCount === 0) {
+        return Promise.reject({ status: 404, msg: 'Article not found' });
+      }
     });
 };
 

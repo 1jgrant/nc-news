@@ -429,7 +429,7 @@ describe('/api', () => {
           });
       });
     });
-    describe.only('DELETE', () => {
+    describe('DELETE', () => {
       test('DELETE - 204 - should delete the requested article', () => {
         return request(app)
           .delete('/api/articles/5')
@@ -454,6 +454,14 @@ describe('/api', () => {
             );
             expect(hasDeletedId).toBe(false);
             expect(comments.length).toBe(16);
+          });
+      });
+      test('DELETE - 404 - for an article_id that does not exist', () => {
+        return request(app)
+          .delete('/api/articles/500')
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Article not found');
           });
       });
     });
