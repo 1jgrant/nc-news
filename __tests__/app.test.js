@@ -682,8 +682,33 @@ describe('/api', () => {
           });
       });
     });
-    describe('DELETE', () => {});
-    describe('INVALID METHODS', () => {});
+    describe.only('DELETE', () => {
+      test('DELETE - 204 - should delete the requested comment', () => {
+        return request(app)
+          .delete('/api/comments/14')
+          .expect(204)
+          .then(() => {
+            return request(app).get('/api/articles/5');
+          })
+          .then((res) => {
+            expect(res.body.article.comment_count).toBe(1);
+          });
+      });
+    });
+    describe('INVALID METHODS', () => {
+      test('405 - get, post, put', () => {
+        const invalidMethods = ['get', 'post', 'put'];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]('/api/comments/1')
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe('Invalid Method');
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
   });
   describe('/missingRoute', () => {
     test('All Methods - 404', () => {

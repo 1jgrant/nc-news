@@ -1,11 +1,11 @@
 const db = require('../db/connection');
 
-const updateComment = (articleId, newVotes) => {
+const updateComment = (commentId, newVotes) => {
   const inc = Number(newVotes.inc_votes)
     ? { votes: newVotes.inc_votes }
     : { votes: 1 };
   return db('comments')
-    .where(articleId)
+    .where(commentId)
     .increment(inc)
     .returning('*')
     .then((res) => {
@@ -16,4 +16,13 @@ const updateComment = (articleId, newVotes) => {
     });
 };
 
-module.exports = { updateComment };
+const removeComment = (commentId) => {
+  return db('comments')
+    .del()
+    .where(commentId)
+    .then((delCount) => {
+      console.log(delCount);
+    });
+};
+
+module.exports = { updateComment, removeComment };
