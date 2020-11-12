@@ -58,7 +58,7 @@ const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
     .orderBy(sortColumn, orderDir);
 };
 
-const fetchArticles = ({ sort_by, order, author, topic, limit }) => {
+const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
   // logic to check if sort_by query is on a valid column
   // using array first, should update to fetch all valid columns via request
   const validColumns = [
@@ -72,6 +72,10 @@ const fetchArticles = ({ sort_by, order, author, topic, limit }) => {
   ];
   const sortColumn = validColumns.includes(sort_by) ? sort_by : 'created_at';
   const orderDir = order === 'asc' ? 'asc' : 'desc';
+  // create limit and offset for pagination
+  const pageLimit = Number(limit) ? limit : 10;
+  const page = p > 1 ? p : 1;
+  const offset = (page - 1) * pageLimit;
   // query the db
   return db
     .select('articles.*')
@@ -80,7 +84,8 @@ const fetchArticles = ({ sort_by, order, author, topic, limit }) => {
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .groupBy('articles.article_id')
     .orderBy(sortColumn, orderDir)
-    .limit(limit || 10)
+    .offset(offset)
+    .limit(pageLimit)
     .modify((query) => {
       if (author) query.where({ 'articles.author': author });
       if (topic) query.where({ topic: topic });

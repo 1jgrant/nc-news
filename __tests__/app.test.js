@@ -121,7 +121,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of all article objects, limited to 10 by default', () => {
         return request(app)
@@ -211,6 +211,43 @@ describe('/api', () => {
           .expect(200)
           .then((res) => {
             expect(res.body.articles.length).toBe(12);
+          });
+      });
+      test('GET - 200 - articles can be viewed in pages by using p query', () => {
+        return request(app)
+          .get('/api/articles?p=2')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(2);
+          });
+      });
+      test('GET - 200 - when p and limit are used together, the results are as expected', () => {
+        return request(app)
+          .get('/api/articles?limit=3&p=2')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(3);
+            expect(res.body.articles).toBeSortedBy('created_at', {
+              descending: true,
+            });
+          });
+      });
+      test('GET - 200 - negative page numbers default to 1', () => {
+        return request(app)
+          .get('/api/articles?p=-2')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(10);
+            expect(res.body.articles[0].article_id).toBe(1);
+          });
+      });
+      test('GET - 200 - endpoint ignores non numeric limit and p', () => {
+        return request(app)
+          .get('/api/articles?limit=five&p=two')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(10);
+            expect(res.body.articles[0].article_id).toBe(1);
           });
       });
       test('GET - 200 - endpoint should ignore invalid sort_by column', () => {
@@ -472,7 +509,7 @@ describe('/api', () => {
           .delete('/api/articles/5')
           .expect(204)
           .then(() => {
-            return request(app).get('/api/articles');
+            return request(app).get('/api/articles?limit=15');
           })
           .then((res) => {
             expect(res.body.articles.length).toBe(11);
