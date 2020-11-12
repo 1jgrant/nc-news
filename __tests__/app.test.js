@@ -631,7 +631,25 @@ describe('/api', () => {
       test('PATCH - 200 - should update the vote count on the comment and respond with the updated comment', () => {
         return request(app)
           .patch('/api/comments/1')
-          .send({ inc_votes: 1 })
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedComment.votes).toBe(18);
+          });
+      });
+      test('PATCH - 200 - should decrease the number of votes by the requested number and respond with the updated comment', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({ inc_votes: -3 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.updatedComment.votes).toBe(13);
+          });
+      });
+      test('PATCH - 200 - default behaviour should be to increment vote count by 1 when req body is invalid', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({})
           .expect(200)
           .then((res) => {
             expect(res.body.updatedComment.votes).toBe(17);
