@@ -554,14 +554,14 @@ describe('/api', () => {
       });
     });
   });
-  describe('/articles/:article_id/comments', () => {
+  describe.only('/articles/:article_id/comments', () => {
     describe('GET', () => {
-      test('GET - 200 - should respond with an array of all comments for the given article_id', () => {
+      test('GET - 200 - should respond with an array of comments for the given article_id, default limit 10', () => {
         return request(app)
           .get('/api/articles/1/comments')
           .expect(200)
           .then((res) => {
-            expect(res.body.comments.length).toBe(13);
+            expect(res.body.comments.length).toBe(10);
           });
       });
       test('GET - 200 - comments in the array should have the correct format', () => {
@@ -609,12 +609,44 @@ describe('/api', () => {
             });
           });
       });
+      test('GET - 200 - comments limit should be adjustable via query', () => {
+        return request(app)
+          .get('/api/articles/1/comments?limit=5')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments.length).toBe(5);
+          });
+      });
+      test('GET - 200 - comments may be viewed in pages via query', () => {
+        return request(app)
+          .get('/api/articles/1/comments?p=2')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments.length).toBe(3);
+          });
+      });
+      test('GET - 200 - negative page numbers default to 1', () => {
+        return request(app)
+          .get('/api/articles/1/comments?p=-2')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments[0].comment_id).toBe(2);
+          });
+      });
+      test('GET - 200 - endpoint ignores non numeric limit and p', () => {
+        return request(app)
+          .get('/api/articles/1/comments?limit=five&p=two')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments[0].comment_id).toBe(2);
+          });
+      });
       test('GET - 200 - endpoint should ignore invalid queries', () => {
         return request(app)
           .get('/api/articles/1/comments?sort_by=invalidColumn')
           .expect(200)
           .then((res) => {
-            expect(res.body.comments.length).toBe(13);
+            expect(res.body.comments.length).toBe(10);
           });
       });
       test('GET - 404 - should respond with a 404 when article does not exist', () => {

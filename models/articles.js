@@ -47,15 +47,21 @@ const createComment = (articleId, { username, body }) => {
     });
 };
 
-const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
+const fetchCommentsByArticleId = (articleId, { sort_by, order, limit, p }) => {
   const validColumns = ['comment_id', 'votes', 'created_at', 'author', 'body'];
   const sortColumn = validColumns.includes(sort_by) ? sort_by : 'created_at';
   const orderDir = order === 'asc' ? 'asc' : 'desc';
+  // create limit and offset for pagination
+  const pageLimit = Number(limit) ? limit : 10;
+  const page = p > 1 ? p : 1;
+  const offset = (page - 1) * pageLimit;
   return db
     .select('comment_id', 'votes', 'created_at', 'author', 'body')
     .from('comments')
     .where(articleId)
-    .orderBy(sortColumn, orderDir);
+    .orderBy(sortColumn, orderDir)
+    .offset(offset)
+    .limit(pageLimit);
 };
 
 const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
