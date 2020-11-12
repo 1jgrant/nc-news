@@ -6,7 +6,7 @@ const db = require('../db/connection');
 describe('/api', () => {
   afterAll(() => db.destroy());
   beforeEach(() => db.seed.run());
-  describe.only('/', () => {
+  describe('/', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with JSON of available endpoints', () => {
         return request(app)
@@ -18,6 +18,20 @@ describe('/api', () => {
             const keys = Object.keys(parsed);
             expect(keys.length).toBe(12);
           });
+      });
+    });
+    describe('INVALID METHODS', () => {
+      test('405 - post, put, patch, delete', () => {
+        const invalidMethods = ['post', 'put', 'patch', 'delete'];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]('/api')
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe('Invalid Method');
+            });
+        });
+        return Promise.all(requestPromises);
       });
     });
   });
@@ -780,6 +794,7 @@ describe('/api', () => {
             expect(res.body.msg).toBe('Route not found');
           });
       });
+      return Promise.all(methodPromises);
     });
   });
 });
