@@ -6,6 +6,21 @@ const db = require('../db/connection');
 describe('/api', () => {
   afterAll(() => db.destroy());
   beforeEach(() => db.seed.run());
+  describe.only('/', () => {
+    describe('GET', () => {
+      test('GET - 200 - should respond with JSON of available endpoints', () => {
+        return request(app)
+          .get('/api')
+          .expect(200)
+          .then((res) => {
+            // check if response is JSON by parsing and checking keys
+            const parsed = JSON.parse(res.body);
+            const keys = Object.keys(parsed);
+            expect(keys.length).toBe(12);
+          });
+      });
+    });
+  });
   describe('/topics', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of the correct length', () => {
