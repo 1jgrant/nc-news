@@ -121,8 +121,15 @@ const checkAuthorExists = (author) => {
 };
 
 const createArticle = ({ title, topic, author, body }) => {
+  // handle error of request body missing required keys
+  // before inserting into db
+  if (!title || !topic || !author || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad request: missing required keys',
+    });
+  }
   const newArticle = { title, topic, author, body };
-  console.log(newArticle);
   return db('articles')
     .insert(newArticle)
     .returning('*')

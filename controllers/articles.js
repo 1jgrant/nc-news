@@ -58,7 +58,6 @@ const getArticles = (req, res, next) => {
 const postArticle = (req, res, next) => {
   createArticle(req.body)
     .then((newArticle) => {
-      console.log({ newArticle });
       res.status(201).send({ newArticle });
     })
     .catch(next);

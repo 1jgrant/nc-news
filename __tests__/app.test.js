@@ -92,7 +92,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of all article objects', () => {
         return request(app)
@@ -263,6 +263,45 @@ describe('/api', () => {
               body: 'testing testing',
               created_at: expect.any(String),
             });
+          });
+      });
+      test('POST - 400 - for a post that is missing required keys', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            title: 'test article',
+          })
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe('Bad request: missing required keys');
+          });
+      });
+      test('POST - 422 - when trying to post to a non existent topic', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            title: 'Test title',
+            topic: 'not a topic',
+            author: 'butter_bridge',
+            body: 'testing testing',
+          })
+          .expect(422)
+          .then((res) => {
+            expect(res.body.msg).toBe('Unprocessable Entity');
+          });
+      });
+      test('POST - 422 - when trying to post to a non existent author', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            title: 'Test title',
+            topic: 'cats',
+            author: 'James',
+            body: 'testing testing',
+          })
+          .expect(422)
+          .then((res) => {
+            expect(res.body.msg).toBe('Unprocessable Entity');
           });
       });
     });
