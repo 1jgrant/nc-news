@@ -52,6 +52,11 @@
       }
     }
   },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes the requested article, no response body. All comments that reference the article will be deleted",
+    "queries": [],
+    "exampleResponse": {}
+  },
   "POST /api/articles/article_id/comments": {
     "description": "posts a new comment to an article and serves an object of the new comment",
     "queries": [],
@@ -136,6 +141,6 @@
   "DELETE /api/comments/:comment_id": {
     "description": "deletes the requested comment, no response body",
     "queries": [],
-    "exampleResponse" : {}
-  }
+    "exampleResponse": {}
+  }  
 }
