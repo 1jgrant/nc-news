@@ -64,7 +64,8 @@ const fetchCommentsByArticleId = (articleId, { sort_by, order }) => {
     .orderBy(sortColumn, orderDir);
 };
 
-const fetchArticles = ({ sort_by, order }) => {
+const fetchArticles = ({ sort_by, order, author }) => {
+  console.log(author);
   return db
     .select('articles.*')
     .from('articles')
@@ -72,6 +73,9 @@ const fetchArticles = ({ sort_by, order }) => {
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .groupBy('articles.article_id')
     .orderBy(sort_by || 'created_at', order || 'desc')
+    .modify((query) => {
+      if (author) query.where({ 'articles.author': author });
+    })
     .then((res) => {
       // knex count returns string, convert counts to numbers
       res.forEach((article) => {

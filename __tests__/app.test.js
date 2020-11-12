@@ -156,6 +156,17 @@ describe('/api', () => {
             });
           });
       });
+      test('GET - 200 - articles be filtered by author via query', () => {
+        return request(app)
+          .get('/api/articles?author=rogersop')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(3);
+            res.body.articles.forEach((article) => {
+              expect(article.author).toBe('rogersop');
+            });
+          });
+      });
     });
   });
   describe('/articles/:article_id', () => {
