@@ -131,6 +131,15 @@ const createArticle = ({ title, topic, author, body }) => {
     });
 };
 
+const removeArticle = (articleId) => {
+  return db('articles')
+    .del()
+    .where(articleId)
+    .then((delCount) => {
+      console.log(delCount);
+    });
+};
+
 // const checkColumnExists = (column, table) => {
 //   return db
 //     .select('*')
@@ -147,4 +156,5 @@ module.exports = {
   fetchCommentsByArticleId,
   fetchArticles,
   createArticle,
+  removeArticle,
 };

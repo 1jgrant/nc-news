@@ -429,6 +429,34 @@ describe('/api', () => {
           });
       });
     });
+    describe.only('DELETE', () => {
+      test('DELETE - 204 - should delete the requested article', () => {
+        return request(app)
+          .delete('/api/articles/5')
+          .expect(204)
+          .then(() => {
+            return request(app).get('/api/articles');
+          })
+          .then((res) => {
+            expect(res.body.articles.length).toBe(11);
+          });
+      });
+      test('DELETE - 204 - comments that reference the deleted article should also be deleted', () => {
+        return request(app)
+          .delete('/api/articles/5')
+          .expect(204)
+          .then(() => {
+            return db('comments');
+          })
+          .then((comments) => {
+            const hasDeletedId = comments.some(
+              (comment) => comment.article_id === 5,
+            );
+            expect(hasDeletedId).toBe(false);
+            expect(comments.length).toBe(16);
+          });
+      });
+    });
     describe('INVALID METHODS', () => {
       test('405 - post, put', () => {
         const invalidMethods = ['post', 'put'];
