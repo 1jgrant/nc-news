@@ -38,7 +38,7 @@
     }
   },
   "PATCH /api/articles/article_id": {
-    "description":"serves an object of the updated article",
+    "description": "updates the vote count of an article by the specified amount, 1 by default, serves an object of the updated article",
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -53,7 +53,7 @@
     }
   },
   "POST /api/articles/article_id/comments": {
-    "description": "serves an object of the new comment",
+    "description": "posts a new comment to an article and serves an object of the new comment",
     "queries": [],
     "exampleResponse":{
       "newComment": {
@@ -89,7 +89,7 @@
   }
 },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -97,7 +97,7 @@
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
-          "body": "Text from the article..",
+          "body": "Text from the article...",
           "created_at": "2020-11-12T12:59:25.649Z"
         }
       ]
@@ -109,14 +109,33 @@
     "exampleResponse": {
         "newArticle": {
           "article_id": 13,
-          "title": "Test article",
-          "body": "testing testing",
+          "title": "Article title...",
+          "body": "Text from the article...",
           "votes": 0,
           "topic": "cats",
           "author": "butter_bridge",
           "created_at": "2020-11-12T12:59:25.649Z"
       }
     }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates the vote count on a comment by the specified amount, defaults to 1. Responds with the updated comment",
+    "queries": [],
+    "exampleResponse": 
+    {
+      "updatedComment": {
+        "comment_id": 1,
+        "author": "butter_bridge",
+        "article_id": 9,
+        "votes": 21,
+        "created_at": "2017-11-22T12:36:03.389Z",
+        "body": "Text from the comment..."
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the requested comment, no response body",
+    "queries": [],
+    "exampleResponse" : {}
   }
-
 }
