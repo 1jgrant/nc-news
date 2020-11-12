@@ -136,6 +136,26 @@ describe('/api', () => {
             });
           });
       });
+      test('GET - 200 - articles may be sorted by any valid column via query', () => {
+        return request(app)
+          .get('/api/articles?sort_by=votes')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toBeSortedBy('votes', {
+              descending: true,
+            });
+          });
+      });
+      test('GET - 200 - articles may be ordered ascending via query', () => {
+        return request(app)
+          .get('/api/articles?sort_by=comment_count&order=asc')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toBeSortedBy('comment_count', {
+              descending: false,
+            });
+          });
+      });
     });
   });
   describe('/articles/:article_id', () => {
@@ -287,7 +307,7 @@ describe('/api', () => {
             );
           });
       });
-      test('GET - 200 - responds with an array that is ordered by newest first by default', () => {
+      test('GET - 200 - responds with an array that is sorted by newest first by default', () => {
         return request(app)
           .get('/api/articles/1/comments')
           .expect(200)
@@ -297,7 +317,7 @@ describe('/api', () => {
             });
           });
       });
-      test('GET - 200 - comments can be ordered by any other valid column via query, descending by default', () => {
+      test('GET - 200 - comments can be sorted by any other valid column via query, descending by default', () => {
         return request(app)
           .get('/api/articles/1/comments?sort_by=votes')
           .expect(200)
