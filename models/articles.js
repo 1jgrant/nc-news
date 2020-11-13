@@ -100,9 +100,17 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
       // when there are no articles in the response, we need to check if the
       // author exists or not and handle appropriately
       if (articles.length === 0 && author) {
-        return Promise.all([articles, checkAuthorExists(author), true]);
+        return Promise.all([
+          articles,
+          checkItemExists('users', 'username', author),
+          true,
+        ]);
       } else if (articles.length === 0 && topic) {
-        return Promise.all([articles, true, checkTopicExists(topic)]);
+        return Promise.all([
+          articles,
+          true,
+          checkItemExists('topics', 'slug', topic),
+        ]);
       } else return [articles, true, true];
     })
     .then(([articles, authorExists, topicExists]) => {
@@ -120,23 +128,13 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
     });
 };
 
-const checkAuthorExists = (author) => {
+const checkItemExists = (column, key, value) => {
   return db
     .select('*')
-    .from('users')
-    .where({ username: author })
-    .then((author) => {
-      return author.length === 0 ? false : true;
-    });
-};
-
-const checkTopicExists = (topic) => {
-  return db
-    .select('*')
-    .from('topics')
-    .where({ slug: topic })
-    .then((topic) => {
-      return topic.length === 0 ? false : true;
+    .from(column)
+    .where(key, '=', value)
+    .then((res) => {
+      return res.length === 0 ? false : true;
     });
 };
 
