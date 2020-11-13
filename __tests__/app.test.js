@@ -239,7 +239,7 @@ describe('/api', () => {
     });
   });
   describe('/articles', () => {
-    describe.only('GET', () => {
+    describe('GET', () => {
       test('GET - 200 - should respond with an array of all article objects, limited to 10 by default', () => {
         return request(app)
           .get('/api/articles')
@@ -427,6 +427,14 @@ describe('/api', () => {
           .expect(200)
           .then((res) => {
             expect(res.body.articles).toEqual([]);
+          });
+      });
+      test('GET - 200 - checker function, checkItemExists, should be case insensitive', () => {
+        return request(app)
+          .get('/api/articles?topic=PaPer')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(0);
           });
       });
       test('GET - 404 - should respond with a 404 when queried author is not found', () => {

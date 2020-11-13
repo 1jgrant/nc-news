@@ -98,7 +98,7 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
     })
     .then((articles) => {
       // when there are no articles in the response, we need to check if the
-      // author exists or not and handle appropriately
+      // author or topic exists or not and handle appropriately
       if (articles.length === 0 && author) {
         return Promise.all([
           articles,
@@ -132,7 +132,7 @@ const checkItemExists = (column, key, value) => {
   return db
     .select('*')
     .from(column)
-    .where(key, '=', value)
+    .where(key, '=', value.toLowerCase())
     .then((res) => {
       return res.length === 0 ? false : true;
     });
