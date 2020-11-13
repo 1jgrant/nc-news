@@ -21,9 +21,7 @@ const patchArticleById = (req, res, next) => {
     .then((updatedArticle) => {
       res.status(200).send({ updatedArticle });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const postComment = (req, res, next) => {
@@ -31,9 +29,7 @@ const postComment = (req, res, next) => {
     .then((newComment) => {
       res.status(201).send({ newComment });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const getCommentsByArticleId = (req, res, next) => {
@@ -41,9 +37,7 @@ const getCommentsByArticleId = (req, res, next) => {
     .then((comments) => {
       res.status(200).send({ comments });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const getArticles = (req, res, next) => {
@@ -51,9 +45,7 @@ const getArticles = (req, res, next) => {
     .then((articles) => {
       res.status(200).send({ articles });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const postArticle = (req, res, next) => {
