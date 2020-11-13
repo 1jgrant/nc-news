@@ -313,6 +313,17 @@ describe('/api', () => {
             expect(hasCorrectAuthor).toBe(true);
           });
       });
+      test('GET - 200 - author query should be case insensitive', () => {
+        return request(app)
+          .get('/api/articles?author=Rogersop')
+          .expect(200)
+          .then((res) => {
+            const hasCorrectAuthor = res.body.articles.every(
+              (article) => article.author === 'rogersop',
+            );
+            expect(hasCorrectAuthor).toBe(true);
+          });
+      });
       test('GET - 200 - articles may be filtered by topic via query', () => {
         return request(app)
           .get('/api/articles?topic=cats')
@@ -322,6 +333,16 @@ describe('/api', () => {
             expect(res.body.articles[0].topic).toBe('cats');
           });
       });
+      test('GET - 200 - articles may be filtered by topic via query', () => {
+        return request(app)
+          .get('/api/articles?topic=CATS')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles.length).toBe(1);
+            expect(res.body.articles[0].topic).toBe('cats');
+          });
+      });
+
       test('GET - 200 - articles limit should be adjustable via query', () => {
         return request(app)
           .get('/api/articles?limit=15')

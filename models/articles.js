@@ -92,8 +92,9 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
     .offset(offset)
     .limit(pageLimit)
     .modify((query) => {
-      if (author) query.where({ 'articles.author': author });
-      if (topic) query.where({ topic: topic });
+      if (author)
+        query.where(db.raw('UPPER(articles.author) LIKE UPPER(?)', author));
+      if (topic) query.where(db.raw('UPPER(topic) LIKE UPPER(?)', topic));
     })
     .then((articles) => {
       // when there are no articles in the response, we need to check if the
