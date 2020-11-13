@@ -5,7 +5,6 @@ const fetchUserByUsername = (username) => {
     .select('*')
     .from('users')
     .where(username)
-    .returning('*')
     .then((res) => {
       if (res.length === 0) {
         return Promise.reject({ status: 404, msg: 'Username not found' });
