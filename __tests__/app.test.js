@@ -437,6 +437,14 @@ describe('/api', () => {
             expect(res.body.msg).toBe('Author not found');
           });
       });
+      test('GET - 404 - should respond with a 404 when queried topic is not found', () => {
+        return request(app)
+          .get('/api/articles?topic=notATopic')
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe('Topic not found');
+          });
+      });
     });
     describe('POST', () => {
       test('POST - 201 - should create a new, correctly formatted article', () => {

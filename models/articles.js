@@ -99,13 +99,18 @@ const fetchArticles = ({ sort_by, order, author, topic, limit, p }) => {
     .then((articles) => {
       // when there are no articles in the response, we need to check if the
       // author exists or not and handle appropriately
-      if (articles.length === 0) {
-        return Promise.all([articles, checkAuthorExists(author)]);
-      } else return [articles, true];
+      if (articles.length === 0 && author) {
+        return Promise.all([articles, checkAuthorExists(author), true]);
+      } else if (articles.length === 0 && topic) {
+        return Promise.all([articles, true, checkTopicExists(topic)]);
+      } else return [articles, true, true];
     })
-    .then(([articles, authorExists]) => {
+    .then(([articles, authorExists, topicExists]) => {
       if (!authorExists) {
         return Promise.reject({ status: 404, msg: 'Author not found' });
+      }
+      if (!topicExists) {
+        return Promise.reject({ status: 404, msg: 'Topic not found' });
       }
       // knex count returns string, convert counts to numbers
       articles.forEach((article) => {
@@ -122,6 +127,16 @@ const checkAuthorExists = (author) => {
     .where({ username: author })
     .then((author) => {
       return author.length === 0 ? false : true;
+    });
+};
+
+const checkTopicExists = (topic) => {
+  return db
+    .select('*')
+    .from('topics')
+    .where({ slug: topic })
+    .then((topic) => {
+      return topic.length === 0 ? false : true;
     });
 };
 
