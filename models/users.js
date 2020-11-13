@@ -14,4 +14,17 @@ const fetchUserByUsername = (username) => {
     });
 };
 
-module.exports = { fetchUserByUsername };
+const fetchUsers = () => {
+  return db.select('*').from('users');
+};
+
+const createUser = (newUser) => {
+  return db('users')
+    .insert(newUser)
+    .returning('*')
+    .then((res) => {
+      return res[0];
+    });
+};
+
+module.exports = { fetchUserByUsername, fetchUsers, createUser };

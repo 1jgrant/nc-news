@@ -70,7 +70,77 @@ describe('/api', () => {
       });
     });
   });
-  describe('/users', () => {});
+  describe.only('/users', () => {
+    describe('GET', () => {
+      test('GET - 200 - should respond with an array of all users', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.users.length).toBe(4);
+          });
+      });
+      test('GET - 200 - responds with an array of correctly formatted objects', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then((res) => {
+            expect(Object.keys(res.body.users[1])).toEqual(
+              expect.arrayContaining(['username', 'avatar_url', 'name']),
+            );
+          });
+      });
+    });
+    describe('POST', () => {
+      test('POST - 201 - should crete a new user', () => {
+        return request(app)
+          .post('/api/users')
+          .send({
+            username: 'testUsername',
+            avatar_url: 'testUrl',
+            name: 'testName',
+          })
+          .expect(201)
+          .then((res) => {
+            return request(app).get('/api/users');
+          })
+          .then((res) => {
+            expect(res.body.users.length).toBe(5);
+          });
+      });
+      test('POST - 201 - should return the new user in the correct format', () => {
+        return request(app)
+          .post('/api/users')
+          .send({
+            username: 'testUsername',
+            avatar_url: 'testUrl',
+            name: 'testName',
+          })
+          .expect(201)
+          .then((res) => {
+            expect(res.body.newUser).toMatchObject({
+              username: 'testUsername',
+              avatar_url: 'testUrl',
+              name: 'testName',
+            });
+          });
+      });
+    });
+    describe('INVALID METHODS', () => {
+      test('405 - put, patch, delete', () => {
+        const invalidMethods = ['put', 'patch', 'delete'];
+        const requestPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]('/api/users')
+            .expect(405)
+            .then((res) => {
+              expect(res.body.msg).toBe('Invalid Method');
+            });
+        });
+        return Promise.all(requestPromises);
+      });
+    });
+  });
   describe('/users/:username', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with a user object containing a single user', () => {
@@ -554,7 +624,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/articles/:article_id/comments', () => {
+  describe('/articles/:article_id/comments', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of comments for the given article_id, default limit 10', () => {
         return request(app)
