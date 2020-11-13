@@ -239,7 +239,7 @@ describe('/api', () => {
     });
   });
   describe('/articles', () => {
-    describe('GET', () => {
+    describe.only('GET', () => {
       test('GET - 200 - should respond with an array of all article objects, limited to 10 by default', () => {
         return request(app)
           .get('/api/articles')
@@ -333,7 +333,7 @@ describe('/api', () => {
             expect(res.body.articles[0].topic).toBe('cats');
           });
       });
-      test('GET - 200 - articles may be filtered by topic via query', () => {
+      test('GET - 200 - topic query should be case insensitive', () => {
         return request(app)
           .get('/api/articles?topic=CATS')
           .expect(200)
@@ -342,7 +342,6 @@ describe('/api', () => {
             expect(res.body.articles[0].topic).toBe('cats');
           });
       });
-
       test('GET - 200 - articles limit should be adjustable via query', () => {
         return request(app)
           .get('/api/articles?limit=15')
