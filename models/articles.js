@@ -8,7 +8,6 @@ const fetchArticleById = (articleId) => {
     .count({ comment_count: 'comment_id' })
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .groupBy('articles.article_id')
-    .returning('*')
     .then((res) => {
       if (res.length === 0) {
         return Promise.reject({ status: 404, msg: 'Article not found' });
@@ -154,6 +153,7 @@ const removeArticle = (articleId) => {
     });
 };
 
+// function to have a scalable check of valid columns
 // const checkColumnExists = (column, table) => {
 //   return db
 //     .select('*')
