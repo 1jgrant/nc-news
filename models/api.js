@@ -5,7 +5,7 @@ const fetchAPI = () => {
     fs.readFile('./endpoints.json', (err, data) => {
       if (err) reject(err);
       else {
-        resolve(data);
+        resolve(JSON.stringify(data));
       }
     });
   });

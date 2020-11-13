@@ -6,7 +6,7 @@ const db = require('../db/connection');
 describe('/api', () => {
   afterAll(() => db.destroy());
   beforeEach(() => db.seed.run());
-  describe('/', () => {
+  describe.only('/', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with JSON of available endpoints', () => {
         return request(app)
@@ -14,6 +14,7 @@ describe('/api', () => {
           .expect(200)
           .then((res) => {
             // check if response is JSON by parsing and checking keys
+            console.log(res.body);
             const parsed = JSON.parse(res.body);
             const keys = Object.keys(parsed);
             expect(keys.length).toBe(15);
