@@ -9,7 +9,43 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  "GET /users/:username" : {
+  "POST /api/topics": {
+    "description": "creates a new topic and serves the created topic",
+    "queries": [],
+    "exampleResponse": {
+      "newTopic": { "slug": "football", "description": "Footie!" }
+    }
+  },
+  "GET /api/users":{
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "lurker",
+          "avatar_url": "https://www.website.com/placeholder-user.png",
+          "name": "userForename"
+        },
+        {
+          "username": "otherUser",
+          "avatar_url": "https://www.website.com/placeholder-user.png",
+          "name": "userForename"
+        }
+      ]
+    }
+  },
+  "POST /api/users": {
+    "description": "creates a new user and serves the created user",
+    "queries": [],
+    "exampleResponse": {
+      "newUser": { 
+        "username": "testUsername", 
+        "avatar_url": "testUrl",
+        "name": "testName"
+      }
+    }
+  },
+  "GET /api/users/:username" : {
     "description": "serves an object of a single user",
     "queries": [],
     "exampleResponse": {
