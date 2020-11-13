@@ -55,6 +55,41 @@ describe('/api', () => {
           });
       });
     });
+    describe('POST', () => {
+      test('POST - 201 - should create a new topic', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({ slug: 'testSlug', description: 'testTopic description' })
+          .expect(201)
+          .then(() => {
+            return request(app).get('/api/topics');
+          })
+          .then((res) => {
+            expect(res.body.topics.length).toBe(4);
+          });
+      });
+      test('POST - 201 - should respond with the new topic', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({ slug: 'testSlug', description: 'testTopic description' })
+          .expect(201)
+          .then((res) => {
+            expect(res.body.newTopic).toMatchObject({
+              slug: 'testSlug',
+              description: 'testTopic description',
+            });
+          });
+      });
+      test('POST - 400 - for a topic that is missing the required keys', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({ description: 'testTopic description' })
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe('Bad request: missing required keys');
+          });
+      });
+    });
     describe('INVALID METHODS', () => {
       test('405 - patch, delete, put', () => {
         const invalidMethods = ['patch', 'put', 'delete'];
@@ -70,7 +105,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/users', () => {
+  describe('/users', () => {
     describe('GET', () => {
       test('GET - 200 - should respond with an array of all users', () => {
         return request(app)
@@ -92,7 +127,7 @@ describe('/api', () => {
       });
     });
     describe('POST', () => {
-      test('POST - 201 - should crete a new user', () => {
+      test('POST - 201 - should create a new user', () => {
         return request(app)
           .post('/api/users')
           .send({
