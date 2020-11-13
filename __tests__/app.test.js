@@ -421,6 +421,14 @@ describe('/api', () => {
             expect(res.body.articles).toEqual([]);
           });
       });
+      test('GET - 200 - should respond with empty array when queried topic is available has no articles', () => {
+        return request(app)
+          .get('/api/articles?topic=paper')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.articles).toEqual([]);
+          });
+      });
       test('GET - 404 - should respond with a 404 when queried author is not found', () => {
         return request(app)
           .get('/api/articles?author=notAUser')
