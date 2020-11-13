@@ -1,11 +1,11 @@
 exports.up = function (knex) {
-  return knex.schema.createTable("users", (usersTable) => {
-    usersTable.text("username").primary().unique().notNullable();
-    usersTable.text("avatar_url");
-    usersTable.text("name");
+  return knex.schema.createTable('users', (usersTable) => {
+    usersTable.text('username').primary();
+    usersTable.text('avatar_url');
+    usersTable.text('name');
   });
 };
 
 exports.down = function (knex) {
-  return knex.schema.dropTable("users");
+  return knex.schema.dropTable('users');
 };
