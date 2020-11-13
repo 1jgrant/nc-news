@@ -125,6 +125,18 @@ describe('/api', () => {
             });
           });
       });
+      test('POST - 400 - for a post that is missing required keys', () => {
+        return request(app)
+          .post('/api/users')
+          .send({
+            avatar_url: 'testUrl',
+            name: 'testName',
+          })
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe('Bad request: missing required keys');
+          });
+      });
     });
     describe('INVALID METHODS', () => {
       test('405 - put, patch, delete', () => {

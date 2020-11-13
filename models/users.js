@@ -18,7 +18,14 @@ const fetchUsers = () => {
   return db.select('*').from('users');
 };
 
-const createUser = (newUser) => {
+const createUser = ({ username, avatar_url, name }) => {
+  if (!username || !avatar_url || !name) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad request: missing required keys',
+    });
+  }
+  const newUser = { username, avatar_url, name };
   return db('users')
     .insert(newUser)
     .returning('*')
