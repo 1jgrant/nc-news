@@ -16,7 +16,7 @@ describe('/api', () => {
             // check if response is JSON by parsing and checking keys
             const parsed = JSON.parse(res.body);
             const keys = Object.keys(parsed);
-            expect(keys.length).toBe(12);
+            expect(keys.length).toBe(15);
           });
       });
     });
