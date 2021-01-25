@@ -4,7 +4,7 @@ REST API to serve data to the front end NC news, reddit style news site</br>
 
 ### API hosted at https://jg-news-app.herokuapp.com/api
 
-### Front end hosted at ...
+### Front end hosted at https://ncnews-jg.netlify.app/
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This is a REST API I built as the back end to a reddit style news website. The A
 [Express](https://expressjs.com/) framework was used for routing and middleware in an MVC design pattern and [Knex](http://knexjs.org/) was used to migrate and seed the database with test and production data.</br>
 I followed test-driven development throughout development of all endpoints, writing tests with [Jest](https://jestjs.io/) framework and [Supertest](https://www.npmjs.com/package/supertest) for testing HTTP.</br>
 The API is hosted on Heroku, where you may view information on all endpoints https://jg-news-app.herokuapp.com/api </br>
-The front end news site is hosted at ...
+The front end news site is hosted at https://ncnews-jg.netlify.app/
 
 ## Technologies
 
