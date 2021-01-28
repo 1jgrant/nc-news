@@ -70,6 +70,8 @@ $ cd ../be-nc-news
 $ npm i
 ```
 
+Make sure you have a psql server installed and initialised on your system. The simplest way to do this is with [Postgres.app](https://postgresapp.com/)</br>
+
 Create & seed the database:
 
 ```
